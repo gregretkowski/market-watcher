@@ -1,0 +1,38 @@
+name: Market Watcher
+
+on:
+  push:
+    branches: [ main ]
+  schedule:
+    # Run every 15 minutes between 13:00-22:59 UTC. This covers US market open
+    # across daylight-saving transitions without manual edits.
+    - cron: '*/15 13-22 * * *'
+
+jobs:
+  run-watcher:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip && pip install -r requirements.txt
+
+      - name: Run market watcher
+        id: run
+        run: |
+          python scripts/market_watcher.py > output.txt || true
+          if [ -s output.txt ]; then echo "has_output=true" >> $GITHUB_OUTPUT; else echo "has_output=false" >> $GITHUB_OUTPUT; fi
+
+      - name: Create issue if there is output
+        if: steps.run.outputs.has_output == 'true'
+        uses: peter-evans/create-issue@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: Market Watcher: update
+          body-file: output.txt
+          labels: market-watcher

@@ -6,7 +6,12 @@ on:
   schedule:
     # Run every 15 minutes between 13:00-22:59 UTC. This covers US market open
     # across daylight-saving transitions without manual edits.
-    - cron: '0,15,30,45 13-22 * * 1-5'
+    - cron: '30,45 09 * * 1-5'
+      timezone: "America/New_York"
+    - cron: '0,15,30,45 10-15 * * 1-5'
+      timezone: "America/New_York"
+    - cron: '0 16 * * 1-5'
+      timezone: "America/New_York"
 
 jobs:
   run-watcher:

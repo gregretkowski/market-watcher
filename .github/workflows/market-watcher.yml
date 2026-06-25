@@ -28,11 +28,11 @@ jobs:
           python scripts/market_watcher.py > output.txt || true
           if [ -s output.txt ]; then echo "has_output=true" >> $GITHUB_OUTPUT; else echo "has_output=false" >> $GITHUB_OUTPUT; fi
 
-      - name: Create issue if there is output
-        if: steps.run.outputs.has_output == 'true'
-        uses: peter-evans/create-issue@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          title: Market Watcher: update
-          body-file: output.txt
-          labels: market-watcher
+      #- name: Create issue if there is output
+      #  if: steps.run.outputs.has_output == 'true'
+      #  uses: peter-evans/create-issue@v4
+      #  with:
+      #    token: ${{ secrets.GITHUB_TOKEN }}
+      #    title: Market Watcher: update
+      #    body-file: output.txt
+      #    labels: market-watcher
